@@ -44,13 +44,13 @@
 }
 
 .status-dot {
-  color: #5c9b79;
+  color: #2c6fd2;
   font-size: 14px;
 }
 
 .share-button {
   border: 1px solid #cbd3ca;
-  background: #e87662;
+  background: #549c14;
   border-radius: 8px;
   padding: 10px 14px;
   color: #fff;
@@ -91,7 +91,7 @@ h1 {
 }
 
 h1 em {
-  color: #e66f5d;
+  color: #549c14;
   font-style: normal;
 }
 
@@ -155,7 +155,7 @@ h2 {
 .step {
   display: block;
   margin-bottom: 8px;
-  color: #e36f5d;
+  color: #549c14;
   font-size: 10px;
 }
 
@@ -190,7 +190,7 @@ input:focus, select:focus {
   width: 44px;
   border: 0;
   border-radius: 7px;
-  background: #5b9777;
+  background: #2c6fd2;
   color: white;
   font-size: 22px;
 }
@@ -332,7 +332,7 @@ label input, label select {
 
 .primary-button {
   border: 0;
-  background: #e87662;
+  background: #549c14;
   color: #fff;
   border-radius: 7px;
   padding: 12px 16px;
@@ -376,8 +376,8 @@ label input, label select {
   width: 35px;
   height: 35px;
   border-radius: 9px;
-  background: #fce9e3;
-  color: #e87662;
+  background: #EEF7F0;
+  color: #549c14;
 }
 
 .expense-detail {
@@ -415,7 +415,7 @@ label input, label select {
 }
 
 .spark {
-  color: #dc806e;
+  color: #549c14;
   font-size: 11px;
   padding-top: 18px;
 }
@@ -435,7 +435,7 @@ label input, label select {
 
 .settlement-row b {
   margin-left: auto;
-  color: #e16f5a;
+  color: #549c14;
   font-size: 17px;
   font-weight: normal;
 }
@@ -483,7 +483,7 @@ label input, label select {
   display: grid;
   place-items: center;
   padding: 36px 0;
-  color: #5e8e70;
+  color: #2c6fd2;
 }
 
 .settled div {
@@ -529,10 +529,30 @@ label input, label select {
   letter-spacing: 1px;
 }
 
-.app-shell footer span {
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer-brand span {
   color: #96a099;
   margin-left: 12px;
   font-size: 11px;
+}
+
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #7d8982;
+  font-size: 11px;
+}
+
+.footer-meta a {
+  color: #59665f;
+  text-underline-offset: 3px;
 }
 
 .share-backdrop {
@@ -591,7 +611,7 @@ label input, label select {
   padding: 0 17px;
   border: 0;
   border-radius: 7px;
-  background: #e87662;
+  background: #549c14;
   color: #fff;
   font-size: 13px;
   font-weight: bold;
@@ -736,7 +756,7 @@ label input, label select {
   margin-top: 20px;
   border: 0;
   border-radius: 8px;
-  background: #e87662;
+  background: #549c14;
   color: white;
   padding: 16px 21px;
   font-size: 14px;
@@ -758,7 +778,7 @@ label input, label select {
   font-size: 13px;
 }
 
-.landing-footer span {
+.landing-footer .footer-brand span {
   margin-left: 12px;
   color: #96a099;
   font-size: 11px;
@@ -778,8 +798,18 @@ label input, label select {
     padding: 20px 18px;
   }
 
-  .landing-footer span {
-    display: block;
-    margin: 4px 0 0;
+  .site-footer {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .footer-brand span {
+    display: inline;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer {
+    flex-direction: column;
   }
 }

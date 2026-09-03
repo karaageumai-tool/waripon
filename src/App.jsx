@@ -27,6 +27,13 @@ const createSplitId = () => {
   return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 13)}`
 }
 
+const SiteFooter = ({ className = '' }) => (
+  <footer className={`site-footer ${className}`}>
+    <div className="footer-brand">waripon <span>ワリポン</span></div>
+    <div className="footer-meta"><span>©2026 ise</span><a href="https://x.com/karaageumai" target="_blank" rel="noreferrer">連絡先</a></div>
+  </footer>
+)
+
 function App() {
   const [splitId, setSplitId] = useState(getSplitId)
   const savedData = readSplitData(splitId)
@@ -164,7 +171,7 @@ function App() {
   const shareText = encodeURIComponent('wariponで割り勘を共有しました')
 
   if (!splitId) {
-    return <div className="landing-shell"><header className="landing-header"><a className="brand" href="/" aria-label="waripon トップページ"><img src={logoUrl} alt="waripon" /></a></header><main className="landing"><div className="landing-content"><h1>わりかんを、<br /><em>ポンっと軽やかに。</em></h1><button className="start-button" onClick={startNew}>新しい割り勘を作成 <span>→</span></button></div></main><footer className="landing-footer">waripon <span>支払いの記録を、みんなの安心に。</span></footer></div>
+    return <div className="landing-shell"><header className="landing-header"><a className="brand" href="/" aria-label="waripon トップページ"><img src={logoUrl} alt="waripon" /></a></header><main className="landing"><div className="landing-content"><h1>わりかんを、<br /><em>ポンっと軽やかに。</em></h1><button className="start-button" onClick={startNew}>新しい割り勘を作成 <span>→</span></button></div></main><SiteFooter className="landing-footer" /></div>
   }
 
   return (
@@ -179,7 +186,7 @@ function App() {
         <section className="lower-grid"><div className="panel expense-list"><div className="panel-heading"><div><span className="step">RECORDED</span><h2>支払い一覧</h2></div><span className="tip">{expenses.length}件</span></div>{expenses.length === 0 ? <p className="empty">支払いを追加すると、ここに表示されます。</p> : expenses.map((expense) => <article className="expense-row" key={expense.id}><div className="expense-icon">¥</div><div className="expense-detail"><strong>{expense.name}</strong><span>{expense.payer}が支払い · {expense.members.length}人分</span></div><strong className="expense-amount">¥{expense.amount.toLocaleString()}</strong><button className="delete-button" onClick={() => removeExpense(expense.id)} aria-label={`${expense.name}を削除`}>×</button></article>)}</div><div className="panel settlement"><div className="panel-heading"><div><span className="step">STEP 03</span><h2>精算する</h2></div><span className="spark">✦ 最小回数で計算</span></div>{settlements.length === 0 ? <div className="settled"><div>✓</div><strong>精算完了</strong><span>みんなの支払いはバランスしています。</span></div> : <div className="settlement-list">{settlements.map((item, index) => <div className="settlement-row" key={`${item.from}-${item.to}`}><div className={`avatar avatar-${index % 4}`}>{item.from.slice(0, 1)}</div><strong>{item.from}</strong><span className="arrow">→</span><div className="avatar avatar-to">{item.to.slice(0, 1)}</div><strong>{item.to}</strong><b>¥{item.amount.toLocaleString()}</b></div>)}<p className="settlement-note">この{settlements.length}回の送金で、精算が完了します。</p></div>}</div></section>
         {notice && <div className="toast">{notice}</div>}
         {shareOpen && <div className="share-backdrop" role="presentation" onMouseDown={() => setShareOpen(false)}><section className="share-dialog" role="dialog" aria-modal="true" aria-labelledby="share-title" onMouseDown={(event) => event.stopPropagation()}><button className="share-close" type="button" onClick={() => setShareOpen(false)} aria-label="閉じる">×</button><span className="step">SHARE</span><h2 id="share-title">割り勘を共有</h2><p>このURLをメンバーに送ってください。</p><div className="share-url"><input value={window.location.href} readOnly aria-label="共有URL" onFocus={(event) => event.target.select()} /><button type="button" onClick={copyShareUrl}>コピー</button></div><div className="social-share"><a className="line-share" href={`https://social-plugins.line.me/lineit/share?url=${shareUrl}`} target="_blank" rel="noreferrer">LINEで共有</a><a className="x-share" href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`} target="_blank" rel="noreferrer">Xで共有</a></div></section></div>}
-      </main><footer>waripon <span>わりかんを、ポンッと軽やかに。</span></footer>
+      </main><SiteFooter />
     </div>
   )
 }
