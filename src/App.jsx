@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
+import { isSupabaseConfigured, supabase } from './lib/supabase'
 
 const getSplitId = () => window.location.pathname.match(/^\/split\/([^/]+)\/?$/)?.[1] || null
 
 const readSplitData = (splitId) => {
   if (!splitId) return null
   try {
+    // 旧形式の長い共有URLも一度だけ読み込み、短いURLへ移行する。
     if (window.location.hash.startsWith('#data=')) {
       return JSON.parse(decodeURIComponent(window.location.hash.slice(6)))
     }
@@ -16,8 +18,12 @@ const readSplitData = (splitId) => {
 }
 
 const createSplitId = () => {
-  if (window.crypto?.randomUUID) return window.crypto.randomUUID().replaceAll('-', '').slice(0, 12)
-  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`
+  const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  if (window.crypto?.getRandomValues) {
+    const bytes = window.crypto.getRandomValues(new Uint8Array(20))
+    return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join('')
+  }
+  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 13)}`
 }
 
 function App() {
@@ -32,6 +38,10 @@ function App() {
   const [expenses, setExpenses] = useState(savedData?.expenses || [])
   const [notice, setNotice] = useState('')
   const [shareOpen, setShareOpen] = useState(false)
+  const [remoteReady, setRemoteReady] = useState(!splitId || !isSupabaseConfigured)
+  const [syncStatus, setSyncStatus] = useState(isSupabaseConfigured ? '接続中' : 'ローカル保存')
+  const remoteUpdatedAt = useRef(null)
+  const savePending = useRef(false)
 
   const total = expenses.reduce((sum, expense) => sum + expense.amount, 0)
   const balances = useMemo(() => {
@@ -61,11 +71,52 @@ function App() {
   }, [balances])
 
   useEffect(() => {
-    if (!splitId) return
-    const data = JSON.stringify({ members, expenses })
-    try { window.localStorage.setItem(`waripon:${splitId}`, data) } catch { /* URLから復元できるため保存失敗を許容 */ }
-    window.history.replaceState(null, '', `/split/${splitId}#data=${encodeURIComponent(data)}`)
-  }, [splitId, members, expenses])
+    if (!splitId || !supabase) return
+    let active = true
+
+    const loadRemote = async () => {
+      if (savePending.current) return
+      const { data: remote, error } = await supabase.rpc('get_split', { split_id: splitId })
+      if (!active) return
+      if (error) {
+        setSyncStatus('オフライン')
+      } else if (remote?.data && remote.updatedAt !== remoteUpdatedAt.current) {
+        const nextMembers = remote.data.members || []
+        setMembers(nextMembers)
+        setExpenses(remote.data.expenses || [])
+        setSelectedMembers(nextMembers)
+        setPayer((current) => nextMembers.includes(current) ? current : (nextMembers[0] || ''))
+        remoteUpdatedAt.current = remote.updatedAt
+        try { window.localStorage.setItem(`waripon:${splitId}`, JSON.stringify(remote.data)) } catch { /* ローカル保存を省略 */ }
+      }
+      setRemoteReady(true)
+      if (!error) setSyncStatus('同期済み')
+    }
+
+    loadRemote()
+    const pollingId = window.setInterval(loadRemote, 3000)
+    return () => { active = false; window.clearInterval(pollingId) }
+  }, [splitId])
+
+  useEffect(() => {
+    if (!splitId || !remoteReady) return
+    const splitData = { members, expenses }
+    try { window.localStorage.setItem(`waripon:${splitId}`, JSON.stringify(splitData)) } catch { /* ローカル保存を省略 */ }
+    window.history.replaceState(null, '', `/split/${splitId}`)
+
+    if (!supabase) return
+    savePending.current = true
+    const saveTimer = window.setTimeout(async () => {
+      const { data, error } = await supabase.rpc('save_split', { split_id: splitId, split_data: splitData })
+      savePending.current = false
+      if (error) setSyncStatus('保存失敗')
+      else {
+        remoteUpdatedAt.current = data?.updatedAt || null
+        setSyncStatus('同期済み')
+      }
+    }, 350)
+    return () => { window.clearTimeout(saveTimer); savePending.current = false }
+  }, [splitId, members, expenses, remoteReady])
 
   const startNew = () => {
     const nextSplitId = createSplitId()
@@ -73,6 +124,7 @@ function App() {
     setSelectedMembers([])
     setExpenses([])
     setPayer('')
+    setRemoteReady(true)
     setSplitId(nextSplitId)
     window.history.pushState(null, '', `/split/${nextSplitId}`)
   }
@@ -116,7 +168,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header className="topbar"><a className="brand" href="/">waripon<span>。</span></a><div className="top-actions"><span className="status-dot">●</span> 自動保存中 <button className="share-button" onClick={() => setShareOpen(true)} aria-haspopup="dialog">共有する <span>↗</span></button></div></header>
+      <header className="topbar"><a className="brand" href="/">waripon<span>。</span></a><div className="top-actions"><span className="status-dot">●</span> {syncStatus} <button className="share-button" onClick={() => setShareOpen(true)} aria-haspopup="dialog">共有する <span>↗</span></button></div></header>
       <main>
         <section className="intro"><div><p className="eyebrow">GROUP EXPENSES / 01</p><h1>みんなのお金を、<br /><em>ポンっと</em>すっきり。</h1><p className="lead">誰がいくら立て替えたかを記録するだけ。<br />wariponが、いちばん少ない回数で精算します。</p></div><div className="total-block"><span>現在の合計</span><strong>¥{total.toLocaleString()}</strong><small>{members.length}人で割り勘中</small></div></section>
         <div className="workspace">
