@@ -22,6 +22,19 @@ Supabase DashboardのSQL Editorで
 
 接続情報がない場合はlocalStorageへ保存するローカルモードで動作します。
 
+## Vercelへのデプロイ
+
+VercelでGitHubリポジトリ `karaageumai-tool/waripon` をImportし、Production Branchを`main`に設定してください。以後、`main`へのpushごとに本番環境が自動更新されます。
+
+VercelのProject Settings → Environment Variablesで、次の2項目をProduction・Previewへ設定します。
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
+
+`vercel.json`のrewrite設定により、`/split/...`を直接開いた場合もReactアプリが表示されます。
+
 ## コマンド
 
 ```sh
