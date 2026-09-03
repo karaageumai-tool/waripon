@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=LINE+Seed+JP&display=swap');
+
+:root {
+  font-family: "LINE Seed JP", 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  color: #18211f;
+  background: #f5f6f0;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
