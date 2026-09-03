@@ -30,7 +30,7 @@ const createSplitId = () => {
 const SiteFooter = ({ className = '' }) => (
   <footer className={`site-footer ${className}`}>
     <div className="footer-brand">waripon <span>ワリポン</span></div>
-    <div className="footer-meta"><span>©2026 ise</span><a href="https://x.com/karaageumai" target="_blank" rel="noreferrer">連絡先</a></div>
+    <div className="footer-meta"><span>©2026 ise</span><a href="https://forms.gle/eizDPPzmAqK2HmNx7" target="_blank" rel="noreferrer">お問い合わせ</a></div>
   </footer>
 )
 
