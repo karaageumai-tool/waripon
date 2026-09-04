@@ -382,6 +382,7 @@ label input, label select {
 
 .expense-detail {
   flex: 1;
+  min-width: 0;
 }
 
 .expense-detail strong, .expense-detail span {
@@ -396,10 +397,12 @@ label input, label select {
 .expense-detail span {
   color: #8a948d;
   font-size: 11px;
+  line-height: 1.5;
   margin-top: 3px;
 }
 
 .expense-amount {
+  flex-shrink: 0;
   font-size: 16px;
   font-weight: normal;
 }
