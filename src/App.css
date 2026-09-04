@@ -4,7 +4,7 @@
 
 .app-shell {
   min-height: 100vh;
-  background: radial-gradient(circle at 8% 20%, #e8eee7 0, transparent 25%), #f5f6f0;
+  background: radial-gradient(circle at 8% 20%, #fde6cb 0, transparent 25%), #fff9f2;
 }
 
 .topbar {
@@ -18,8 +18,8 @@
   max-width: 1180px;
   margin: auto;
   padding: 0 34px;
-  border-bottom: 1px solid #dfe3d8;
-  background: rgba(245, 246, 240, .9);
+  border-bottom: 1px solid #e7ddd1;
+  background: rgba(255, 248, 240, .9);
   backdrop-filter: blur(12px);
 }
 
@@ -32,25 +32,25 @@
 .brand img {
   display: block;
   width: auto;
-  height: 36px;
+  height: 42px;
 }
 
 .top-actions {
   display: flex;
   gap: 20px;
   align-items: center;
-  color: #69736e;
+  color: #766b63;
   font-size: 12px;
 }
 
 .status-dot {
-  color: #2c6fd2;
+  color: #d22c49;
   font-size: 14px;
 }
 
 .share-button {
-  border: 1px solid #cbd3ca;
-  background: #549c14;
+  border: 1px solid #d8c8ba;
+  background: #ed8f31;
   border-radius: 8px;
   padding: 10px 14px;
   color: #fff;
@@ -75,7 +75,7 @@ main {
 }
 
 .eyebrow, .step {
-  color: #718078;
+  color: #7d7067;
   font-size: 11px;
   letter-spacing: 1.5px;
   font-weight: bold;
@@ -91,12 +91,12 @@ h1 {
 }
 
 h1 em {
-  color: #549c14;
+  color: #d97820;
   font-style: normal;
 }
 
 .lead {
-  color: #69736e;
+  color: #766b63;
   font-size: 15px;
   line-height: 1.8;
 }
@@ -108,13 +108,13 @@ h1 em {
 
 .total-block span, .total-block small {
   display: block;
-  color: #7d8982;
+  color: #887b71;
   font-size: 12px;
 }
 
 .total-block strong {
   display: block;
-  color: #26302b;
+  color: #332a25;
   font-size: 40px;
   margin: 3px 0;
 }
@@ -128,9 +128,9 @@ h1 em {
 
 .panel {
   background: rgba(255, 255, 252, .84);
-  border: 1px solid #dfe4da;
+  border: 1px solid #e7ddd1;
   border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(39, 57, 47, .035);
+  box-shadow: 0 12px 28px rgba(72, 48, 30, .045);
 }
 
 .input-panel {
@@ -146,7 +146,7 @@ h1 em {
 }
 
 h2 {
-  color: #24302b;
+  color: #332a25;
   margin: 0;
   font-size: 25px;
   font-weight: 400;
@@ -155,12 +155,12 @@ h2 {
 .step {
   display: block;
   margin-bottom: 8px;
-  color: #549c14;
+  color: #d22c49;
   font-size: 10px;
 }
 
 .member-count, .tip {
-  color: #85918a;
+  color: #91847a;
   font-size: 12px;
   padding-top: 18px;
 }
@@ -173,24 +173,24 @@ h2 {
 
 input, select {
   width: 100%;
-  border: 1px solid #d6ddd4;
-  background: #fafbf7;
-  color: #26302b;
+  border: 1px solid #e1d5c9;
+  background: #fffaf4;
+  color: #332a25;
   border-radius: 7px;
   padding: 11px 12px;
   outline: none;
 }
 
 input:focus, select:focus {
-  border-color: #85a995;
-  box-shadow: 0 0 0 3px rgba(133, 169, 149, .15);
+  border-color: #f0ae6c;
+  box-shadow: 0 0 0 3px rgba(237, 143, 49, .2);
 }
 
 .member-form button {
   width: 44px;
   border: 0;
   border-radius: 7px;
-  background: #2c6fd2;
+  background: #d22c49;
   color: white;
   font-size: 22px;
 }
@@ -206,7 +206,7 @@ input:focus, select:focus {
   align-items: center;
   gap: 7px;
   padding: 7px 8px 7px 10px;
-  background: #edf3ee;
+  background: #fff2e4;
   border-radius: 20px;
   font-size: 13px;
 }
@@ -215,15 +215,15 @@ input:focus, select:focus {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #5a9b79;
+  background: #ed8f31;
 }
 
 .member-chip.color-1 i {
-  background: #e89857;
+  background: #d6a13d;
 }
 
 .member-chip.color-2 i {
-  background: #7d91bc;
+  background: #d22c49;
 }
 
 .member-chip.color-3 i {
@@ -254,7 +254,7 @@ input:focus, select:focus {
 }
 
 label, .who-pays>span {
-  color: #7d8982;
+  color: #887b71;
   font-size: 11px;
   font-weight: bold;
 }
@@ -269,8 +269,8 @@ label input, label select {
   align-items: center;
   gap: 2px;
   margin-top: 7px;
-  border: 1px solid #d6ddd4;
-  background: #fafbf7;
+  border: 1px solid #e1d5c9;
+  background: #fffaf4;
   border-radius: 7px;
   padding-left: 11px;
   color: #9ba69f;
@@ -282,7 +282,7 @@ label input, label select {
 }
 
 .amount-input:focus-within {
-  border-color: #85a995;
+  border-color: #f0ae6c;
 }
 
 .who-pays {
@@ -299,18 +299,18 @@ label input, label select {
 }
 
 .who-pays button {
-  border: 1px solid #d4ddd5;
+  border: 1px solid #e1d5c9;
   background: #fff;
-  color: #657169;
+  color: #756960;
   border-radius: 20px;
   padding: 7px 11px;
   font-size: 12px;
 }
 
 .who-pays button.selected {
-  border-color: #5b9777;
-  color: #397353;
-  background: #eef7f0;
+  border-color: #ed8f31;
+  color: #a64e1f;
+  background: #fff3e6;
 }
 
 .who-pays button span {
@@ -318,21 +318,21 @@ label input, label select {
   width: 15px;
   height: 15px;
   margin-right: 4px;
-  border: 1px solid #bfcac1;
+  border: 1px solid #d8c8ba;
   border-radius: 50%;
   vertical-align: -3px;
 }
 
 .who-pays button.selected span {
   border: 0;
-  background: #5b9777;
+  background: #ed8f31;
   color: white;
   line-height: 15px;
 }
 
 .primary-button {
   border: 0;
-  background: #549c14;
+  background: #ed8f31;
   color: #fff;
   border-radius: 7px;
   padding: 12px 16px;
@@ -366,7 +366,7 @@ label input, label select {
   display: flex;
   align-items: center;
   gap: 12px;
-  border-top: 1px solid #ebeee8;
+  border-top: 1px solid #eee5dc;
   padding: 15px 0;
 }
 
@@ -376,8 +376,8 @@ label input, label select {
   width: 35px;
   height: 35px;
   border-radius: 9px;
-  background: #EEF7F0;
-  color: #549c14;
+  background: #fff3e6;
+  color: #d97820;
 }
 
 .expense-detail {
@@ -418,7 +418,7 @@ label input, label select {
 }
 
 .spark {
-  color: #549c14;
+  color: #d22c49;
   font-size: 11px;
   padding-top: 18px;
 }
@@ -432,13 +432,13 @@ label input, label select {
   align-items: center;
   gap: 8px;
   padding: 12px 0;
-  border-top: 1px solid #ebeee8;
+  border-top: 1px solid #eee5dc;
   font-size: 13px;
 }
 
 .settlement-row b {
   margin-left: auto;
-  color: #549c14;
+  color: #d97820;
   font-size: 17px;
   font-weight: normal;
 }
@@ -449,8 +449,8 @@ label input, label select {
   width: 27px;
   height: 27px;
   border-radius: 50%;
-  background: #dcefe1;
-  color: #43805c;
+  background: #ffe3c7;
+  color: #b85e18;
   font-size: 11px;
 }
 
@@ -460,8 +460,13 @@ label input, label select {
 }
 
 .avatar-2 {
-  background: #dce6f5;
-  color: #55719e;
+  background: #f9dce2;
+  color: #a52037;
+}
+
+.avatar-3 {
+  background: #f3e0e9;
+  color: #965b75;
 }
 
 .avatar-to {
@@ -479,18 +484,18 @@ label input, label select {
   font-size: 11px;
   margin: 14px 0 0;
   padding-top: 13px;
-  border-top: 1px dashed #dce2d9;
+  border-top: 1px dashed #e5d9cc;
 }
 
 .settled {
   display: grid;
   place-items: center;
   padding: 36px 0;
-  color: #2c6fd2;
+  color: #d22c49;
 }
 
 .settled div {
-  border: 1px solid #8ab295;
+  border: 1px solid #f0ae6c;
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -515,7 +520,7 @@ label input, label select {
   bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
-  background: #25332c;
+  background: #3a2c24;
   color: white;
   border-radius: 8px;
   padding: 12px 18px;
@@ -523,9 +528,9 @@ label input, label select {
 }
 
 .app-shell footer {
-  border-top: 1px solid #dfe3d8;
+  border-top: 1px solid #e7ddd1;
   padding: 22px 34px;
-  color: #27332d;
+  color: #392e28;
   font-size: 13px;
   max-width: 1180px;
   margin: auto;
@@ -554,7 +559,7 @@ label input, label select {
 }
 
 .footer-meta a {
-  color: #59665f;
+  color: #6f6259;
   text-underline-offset: 3px;
 }
 
@@ -573,7 +578,7 @@ label input, label select {
   position: relative;
   width: min(500px, 100%);
   padding: 30px;
-  border: 1px solid #dfe4da;
+  border: 1px solid #e7ddd1;
   border-radius: 14px;
   background: #fffffc;
   box-shadow: 0 24px 70px rgba(24, 33, 31, .2);
@@ -614,7 +619,7 @@ label input, label select {
   padding: 0 17px;
   border: 0;
   border-radius: 7px;
-  background: #549c14;
+  background: #ed8f31;
   color: #fff;
   font-size: 13px;
   font-weight: bold;
@@ -718,7 +723,7 @@ label input, label select {
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  background: radial-gradient(circle at 85% 18%, #e8eee7 0, transparent 27%), #f5f6f0;
+  background: radial-gradient(circle at 85% 18%, #fde6cb 0, transparent 27%), #fff9f2;
 }
 
 .landing-header {
@@ -731,8 +736,8 @@ label input, label select {
   padding: 0 34px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #dfe3d8;
-  background: rgba(245, 246, 240, .9);
+  border-bottom: 1px solid #e7ddd1;
+  background: rgba(255, 248, 240, .9);
   backdrop-filter: blur(12px);
 }
 
@@ -759,12 +764,12 @@ label input, label select {
   margin-top: 20px;
   border: 0;
   border-radius: 8px;
-  background: #549c14;
+  background: #ed8f31;
   color: white;
   padding: 16px 21px;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 16px;
   box-shadow: 0 9px 16px rgba(198, 102, 84, .15);
+  letter-spacing: 2px;
 }
 
 .start-button span {
@@ -776,8 +781,8 @@ label input, label select {
   width: min(1180px, 100%);
   margin: auto;
   padding: 22px 34px;
-  border-top: 1px solid #dfe3d8;
-  color: #27332d;
+  border-top: 1px solid #e7ddd1;
+  color: #392e28;
   font-size: 13px;
 }
 
