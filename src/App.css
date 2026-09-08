@@ -171,7 +171,7 @@ h2 {
   margin-bottom: 17px;
 }
 
-input, select {
+input, select, textarea {
   width: 100%;
   border: 1px solid #e1d5c9;
   background: #fffaf4;
@@ -181,7 +181,7 @@ input, select {
   outline: none;
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
   border-color: #f0ae6c;
   box-shadow: 0 0 0 3px rgba(237, 143, 49, .2);
 }
@@ -259,9 +259,20 @@ label, .who-pays>span {
   font-weight: bold;
 }
 
-label input, label select {
+label input, label select, label textarea {
   display: block;
   margin-top: 7px;
+}
+
+.expense-note-field {
+  display: block;
+  margin-top: 16px;
+}
+
+.expense-note-field textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
 }
 
 .amount-input {
@@ -399,6 +410,13 @@ label input, label select {
   font-size: 11px;
   line-height: 1.5;
   margin-top: 3px;
+}
+
+.expense-detail .expense-note {
+  color: #766b63;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 6px;
 }
 
 .expense-amount {
