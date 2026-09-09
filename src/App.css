@@ -314,9 +314,9 @@ label input, label select, label textarea {
 }
 
 .who-pays button.selected {
-  border-color: #ed8f31;
-  color: #a64e1f;
-  background: #fff3e6;
+  border-color: var(--member-dot);
+  color: var(--member-ink);
+  background: var(--member-bg);
 }
 
 .who-pays button span {
@@ -331,9 +331,14 @@ label input, label select, label textarea {
 
 .who-pays button.selected span {
   border: 0;
-  background: #ed8f31;
+  background: var(--member-ink);
   color: white;
   line-height: 15px;
+}
+
+.who-pays button:focus-visible {
+  outline: 2px solid var(--member-ink);
+  outline-offset: 3px;
 }
 
 .primary-button {
