@@ -5,6 +5,9 @@ import { isExpired, purgeLocalSplits, sixMonthsFrom } from './lib/expiration'
 import { receiptsApiUrl, receiptRequest } from './lib/receipts'
 import Receipts from './components/Receipts'
 import ReceiptPicker from './components/ReceiptPicker'
+import FaqPage from './components/FaqPage'
+import SiteFooter from './components/SiteFooter'
+import LandingHeader from './components/LandingHeader'
 import logoUrl from '../logo/logo.svg'
 
 const getSplitId = () => window.location.pathname.match(/^\/split\/([^/]+)\/?$/)?.[1] || null
@@ -29,12 +32,6 @@ const createSplitId = () => {
   return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 13)}`
 }
 
-const SiteFooter = ({ className = '' }) => (
-  <footer className={`site-footer ${className}`}>
-    <div className="footer-brand">waripon <span>ワリポン</span></div>
-    <div className="footer-meta"><span>©2026 ise</span><a href="https://forms.gle/eizDPPzmAqK2HmNx7" target="_blank" rel="noreferrer">お問い合わせ</a></div>
-  </footer>
-)
 
 function App() {
   const [splitId, setSplitId] = useState(getSplitId)
@@ -211,6 +208,24 @@ function App() {
     setNewMember('')
   }
 
+  const removeMember = (member) => {
+    if (submission.current) return
+    const nextMembers = members.filter((item) => item !== member)
+    const nextExpenses = expenses
+      .filter((expense) => expense.payer !== member)
+      .map((expense) => ({ ...expense, members: expense.members.filter((item) => item !== member) }))
+      .filter((expense) => expense.members.length > 0)
+    setMembers(nextMembers)
+    setSelectedMembers((current) => current.filter((item) => item !== member))
+    setPayer((current) => current === member ? (nextMembers[0] || '') : current)
+    setExpenses(nextExpenses)
+    if (pendingExpenseId && !nextExpenses.some((expense) => expense.id === pendingExpenseId)) {
+      setPendingExpenseId(null)
+      setReceiptFiles([])
+      setReceiptError('')
+    }
+  }
+
   const addExpense = async (event) => {
     event.preventDefault()
     if (submission.current || compressing) return
@@ -271,8 +286,10 @@ function App() {
   const shareUrl = encodeURIComponent(window.location.href)
   const shareText = encodeURIComponent('wariponで割り勘を共有しました')
 
+  if (/^\/faq\/?$/.test(window.location.pathname)) return <FaqPage />
+
   if (!splitId) {
-    return <div className="landing-shell"><header className="landing-header"><a className="brand" href="/" aria-label="waripon トップページ"><img src={logoUrl} alt="waripon" /></a></header><main className="landing"><div className="landing-content"><h1>わりかんを、<br /><em>ポンっと軽やかに。</em></h1><button className="start-button" onClick={startNew} disabled={creating}>新しい割り勘を作成 <span>→</span></button>{notice && <p role="alert">{notice}</p>}</div></main><SiteFooter className="landing-footer" /></div>
+    return <div className="landing-shell"><LandingHeader /><main className="landing"><div className="landing-content"><h1>わりかんを、<br /><em>ポンっと軽やかに。</em></h1><button className="start-button" onClick={startNew} disabled={creating}>新しい割り勘を作成 <span>→</span></button>{notice && <p role="alert">{notice}</p>}</div></main><SiteFooter className="landing-footer" /></div>
   }
 
   if (unavailable || !remoteReady) {
@@ -285,7 +302,7 @@ function App() {
       <main>
         <section className="intro"><div><p className="eyebrow">GROUP EXPENSES</p><h1>みんなのお金を、<br /><em>ポンっと</em>すっきり。</h1><p className="lead">誰がいくら立て替えたかを記録するだけ。<br />wariponが、いちばん少ない回数で精算します。</p></div><div className="total-block"><span>現在の合計</span><strong>¥{total.toLocaleString()}</strong><small>{members.length}人で割り勘中</small></div></section>
         <div className="workspace">
-          <section className="panel input-panel"><div className="panel-heading"><div><span className="step">STEP 01</span><h2>メンバーを追加</h2></div><span className="member-count">{members.length}人</span></div><form className="member-form" onSubmit={addMember}><input value={newMember} onChange={(event) => setNewMember(event.target.value)} placeholder="名前を入力" /><button type="submit" aria-label="メンバーを追加">＋</button></form><div className="member-list">{members.map((member, index) => <span className={`member-chip color-${index % 4}`} key={member}><i />{member}<button type="button" disabled={submitting} onClick={() => { if (members.length > 1) { setMembers(members.filter((item) => item !== member)); setSelectedMembers(selectedMembers.filter((item) => item !== member)); if (payer === member) setPayer(members.find((item) => item !== member) || '') } }} aria-label={`${member}を削除`}>×</button></span>)}</div></section>
+          <section className="panel input-panel"><div className="panel-heading"><div><span className="step">STEP 01</span><h2>メンバーを追加</h2></div><span className="member-count">{members.length}人</span></div><form className="member-form" onSubmit={addMember}><input value={newMember} onChange={(event) => setNewMember(event.target.value)} placeholder="名前を入力" /><button type="submit" aria-label="メンバーを追加">＋</button></form><div className="member-list">{members.map((member, index) => <span className={`member-chip color-${index % 4}`} key={member}><i />{member}<button type="button" disabled={submitting} onClick={() => removeMember(member)} aria-label={`${member}を削除`}>×</button></span>)}</div></section>
           <section className="panel input-panel expense-input"><div className="panel-heading"><div><span className="step">STEP 02</span><h2>支払いを記録</h2></div><span className="tip">レシートごとに入力</span></div><form onSubmit={addExpense}><fieldset className="expense-fields" disabled={submitting || Boolean(pendingExpenseId)}><div className="form-grid"><label>内容<input value={expenseName} onChange={(event) => setExpenseName(event.target.value)} placeholder="例：ランチ、ホテル代" /></label><label>支払った人<select value={payer} onChange={(event) => setPayer(event.target.value)}>{members.map((member) => <option key={member}>{member}</option>)}</select></label><label className="amount-field">金額<div className="amount-input"><span>¥</span><input type="number" min="1" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="0" /></div></label></div><label className="expense-note-field">備考（任意）<textarea value={expenseNote} onChange={(event) => setExpenseNote(event.target.value)} rows={3} placeholder="例：クーポン利用、立て替え時のメモ" /></label><div className="who-pays"><span>誰のぶん？</span><div>{members.map((member) => <button type="button" className={selectedMembers.includes(member) ? 'selected' : ''} key={member} onClick={() => toggleMember(member)}><span>{selectedMembers.includes(member) ? '✓' : ''}</span>{member}</button>)}</div></div></fieldset>{receiptsApiUrl && isSupabaseConfigured && <ReceiptPicker files={receiptFiles} onChange={setReceiptFiles} disabled={submitting} onBusy={setCompressing} />}{receiptError && <p className="receipt-message" role="status">{receiptError}</p>}<button className="primary-button" type="submit" disabled={submitting || compressing}>{submitting ? '保存中…' : pendingExpenseId ? '画像の保存を再試行' : '支払いを追加'} <span>＋</span></button></form></section>
         </div>
         <section className="lower-grid"><div className="panel expense-list"><div className="panel-heading"><div><span className="step">RECORDED</span><h2>支払い一覧</h2></div><span className="tip">{expenses.length}件</span></div>{expenses.length === 0 ? <p className="empty">支払いを追加すると、ここに表示されます。</p> : expenses.map((expense) => <article className="expense-row" key={expense.id}><div className="expense-icon">¥</div><div className="expense-detail"><strong>{expense.name}</strong><span>{expense.payer}が支払い · {expense.members.join('、')}の分</span>{expense.note && <span className="expense-note">{expense.note}</span>}{receiptsApiUrl && isSupabaseConfigured && <Receipts splitId={splitId} expenseId={expense.id} disabled={submitting || syncStatus !== '同期済み'} revision={receiptRevision} />}</div><strong className="expense-amount">¥{expense.amount.toLocaleString()}</strong><button className="delete-button" disabled={submitting || pendingExpenseId === expense.id} onClick={() => removeExpense(expense.id)} aria-label={`${expense.name}を削除`}>×</button></article>)}</div><div className="panel settlement"><div className="panel-heading"><div><span className="step">STEP 03</span><h2>精算する</h2></div><span className="spark">✦ 最小回数で計算</span></div>{settlements.length === 0 ? <div className="settled"><div>✓</div><strong>精算完了</strong><span>みんなの支払いはバランスしています。</span></div> : <div className="settlement-list">{settlements.map((item) => <div className="settlement-row" key={`${item.from}-${item.to}`}><div className={`avatar avatar-${members.indexOf(item.from) % 4}`}>{item.from.slice(0, 1)}</div><strong>{item.from}</strong><span className="arrow">→</span><div className="avatar avatar-to">{item.to.slice(0, 1)}</div><strong>{item.to}</strong><b>¥{item.amount.toLocaleString()}</b></div>)}<p className="settlement-note">この{settlements.length}回の送金で、精算が完了します。</p></div>}

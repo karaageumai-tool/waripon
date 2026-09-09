@@ -4,7 +4,7 @@
 
 .app-shell {
   min-height: 100vh;
-  background: radial-gradient(circle at 8% 20%, #fde6cb 0, transparent 25%), #fff9f2;
+  background: radial-gradient(circle at bottom right, #fde6cb 0, transparent 25%), #fff9f2;
 }
 
 .topbar {
@@ -512,6 +512,24 @@ label input, label select, label textarea {
   line-height: 1.6;
 }
 
+.faq-shell { min-height: 100dvh; display: flex; flex-direction: column; }
+.faq-main { width: 100%; max-width: 840px; flex: 1; }
+.faq-intro { margin: 48px 0 36px; }
+.faq-intro h1 { font-size: clamp(28px, 5vw, 42px); }
+.faq-back, .faq-contact a { color: #99541f; text-underline-offset: 4px; }
+.faq-back { display: inline-block; font-size: 13px; }
+.faq-bottom-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 32px; margin-top: 36px; }
+.faq-section { margin-bottom: 30px; }
+.faq-section h2 { font-size: 18px; margin: 0 0 14px; }
+.faq-list { padding: 0 22px; }
+.faq-item + .faq-item { border-top: 1px solid #eee5dc; }
+.faq-item summary { padding: 20px 0; cursor: pointer; font-size: 14px; line-height: 1.7; font-weight: 600; }
+.faq-item summary::marker { color: #d97820; }
+.faq-item summary:focus-visible { outline: 2px solid #d97820; outline-offset: 4px; }
+.faq-item p { margin: 0; padding: 0 0 22px; font-size: 14px; line-height: 1.9; color: #6d6056; overflow-wrap: anywhere; }
+.faq-contact { font-size: 13px; line-height: 1.8; margin: 32px 0; }
+.footer-meta { flex-wrap: wrap; }
+
 .receipts { margin-top: 10px; }
 .expense-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
 .receipt-picker { margin-bottom: 16px; }
@@ -594,7 +612,7 @@ label input, label select, label textarea {
   font-size: 13px;
 }
 
-.app-shell footer {
+.app-shell footer:not(.landing-footer) {
   border-top: 1px solid #e7ddd1;
   padding: 22px 34px;
   color: #392e28;
@@ -790,7 +808,7 @@ label input, label select, label textarea {
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  background: radial-gradient(circle at 85% 18%, #fde6cb 0, transparent 27%), #fff9f2;
+  background: radial-gradient(circle at bottom right, #fde6cb 0, transparent 27%), #fff9f2;
 }
 
 .landing-header {
