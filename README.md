@@ -35,6 +35,21 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 
 `vercel.json`のrewrite設定により、`/split/...`を直接開いた場合もReactアプリが表示されます。
 
+## 保存期限（6か月）
+
+既存環境では `supabase/migrations/20260909000000_expire_splits.sql` をSupabaseのSQL Editorで実行してから、アプリをデプロイしてください。新規環境ではmigrations内のSQLをファイル名順に実行します。DBへの管理接続が必要です。
+
+- 発行から暦上の6か月（UTC基準、月末は末日に丸める）で取得・更新できなくなり、毎分のCronで期限切れ行を削除します。更新しても期限は延長されません。
+- 既存データには発行日時がないため、最終更新日時から6か月を期限とします。
+- 新規発行はサーバーがIDを生成する `create_split` のみで行い、`save_split` は更新専用です。削除済みURLからデータを再作成できません。
+- 共有モードではlocalStorageに保存しません。過去のブラウザ保存データは次回アクセス時に削除します。ローカルモードは期限付き保存で、アプリ起動中または次回アクセス時に削除します。期限情報のない旧ローカルデータも削除対象です。
+- Cronの実行成功はSupabase DashboardのIntegrations → Cronで確認してください。停止・障害時は物理削除が遅れますが、期限切れデータの取得・更新は拒否されます。
+- この削除は稼働DBの行を対象とします。Supabaseのバックアップや利用者が保存したコピーまで同時に消去するものではありません。
+
+Cronの設定仕様: https://supabase.com/docs/guides/cron
+
+期限計算のテスト: `node --test src/lib/expiration.test.js`
+
 ## コマンド
 
 ```sh

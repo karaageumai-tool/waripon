@@ -505,6 +505,13 @@ label input, label select, label textarea {
   border-top: 1px dashed #e5d9cc;
 }
 
+.retention-notice {
+  margin: 16px 0 0;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
 .settled {
   display: grid;
   place-items: center;
