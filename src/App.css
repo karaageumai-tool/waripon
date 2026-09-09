@@ -211,31 +211,18 @@ input:focus, select:focus, textarea:focus {
   font-size: 13px;
 }
 
+.color-0 { --member-dot: #ed8f31; --member-bg: #fff0df; --member-ink: #94501b; }
+.color-1 { --member-dot: #2878c8; --member-bg: #e7f1fc; --member-ink: #225a92; }
+.color-2 { --member-dot: #2a9255; --member-bg: #e7f5eb; --member-ink: #246a40; }
+.color-3 { --member-dot: #d22c49; --member-bg: #fce9ed; --member-ink: #a2243b; }
+.color-4 { --member-dot: #8651b5; --member-bg: #f1eafa; --member-ink: #68408d; }
+.color-5 { --member-dot: #168b98; --member-bg: #e3f4f5; --member-ink: #176670; }
+
 .member-chip i {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ed8f31;
-}
-
-.member-chip.color-1 i {
-  background: #2878c8;
-}
-
-.member-chip.color-2 i {
-  background: #2a9255;
-}
-
-.member-chip.color-3 i {
-  background: #d22c49;
-}
-
-.member-chip.color-4 i {
-  background: #8651b5;
-}
-
-.member-chip.color-5 i {
-  background: #168b98;
+  background: var(--member-dot, #ed8f31);
 }
 
 .member-chip button, .delete-button {
@@ -480,24 +467,9 @@ label input, label select, label textarea {
   font-size: 11px;
 }
 
-.avatar-1 {
-  background: #fae3d2;
-  color: #b16b3b;
-}
-
-.avatar-2 {
-  background: #f9dce2;
-  color: #a52037;
-}
-
-.avatar-3 {
-  background: #f3e0e9;
-  color: #965b75;
-}
-
-.avatar-to {
-  background: #f6dfd9;
-  color: #bb6759;
+.avatar, .expense-icon {
+  background: var(--member-bg, #fff0df);
+  color: var(--member-ink, #94501b);
 }
 
 .arrow {
