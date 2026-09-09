@@ -18,6 +18,7 @@ const sections = [
       ['メンバーにはどうやって共有しますか？', 'ページ右上の「共有する」からURLをコピーして送るか、LINE・Xの共有ボタンを使ってください。同じURLを開くと、メンバー間で割り勘の内容を共有できます。'],
       ['共有したページは誰でも編集できますか？', 'その割り勘のURLを知っている人は、内容の閲覧・追加・削除ができます。閲覧専用の権限はありません。URLは一緒に精算するメンバーに共有してください。'],
       ['ページやレシート画像はいつまで保存されますか？', '割り勘ページの発行から6か月です。有効期限はページ下部に表示されます。途中で支払いや画像を追加しても期限は延長されません。期限を過ぎると利用できなくなり、保存データと画像は順次自動削除されます。'],
+      ['ページを手動で削除したい', 'ページ全体を手動で削除する機能はありません。ページは発行から6か月で利用できなくなり、保存データと画像は順次自動削除されます。期限前に内容を消したい場合は、メンバー・支払い・添付画像をそれぞれ「×」から削除してください。内容をすべて削除しても、ページのURLは有効期限まで残ります。'],
       ['有効期限を延長したり、削除されたページを復元したりできますか？', '有効期限の延長や、削除済みページの復元はできません。必要な精算内容や画像は、有効期限までにお手元に控えてください。'],
     ],
   },
@@ -54,7 +55,7 @@ export default function FaqPage() {
       {sections.map((section, sectionIndex) => <section className="faq-section" key={section.title} aria-labelledby={`faq-section-${sectionIndex}`}>
         <h2 id={`faq-section-${sectionIndex}`}>{section.title}</h2>
         <div className="panel faq-list">{section.items.map(([question, answer]) => <details className="faq-item" key={question}>
-          <summary>{question}</summary><p>{answer}</p>
+          <summary>{question}</summary><p>{answer.replace(/。/g, '。\n').trimEnd()}</p>
         </details>)}</div>
       </section>)}
       <nav className="faq-bottom-links" aria-label="FAQページ下部のナビゲーション">

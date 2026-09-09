@@ -534,7 +534,7 @@ label input, label select, label textarea {
 .faq-item summary { padding: 20px 0; cursor: pointer; font-size: 14px; line-height: 1.7; font-weight: 600; }
 .faq-item summary::marker { color: #d97820; }
 .faq-item summary:focus-visible { outline: 2px solid #d97820; outline-offset: 4px; }
-.faq-item p { margin: 0; padding: 0 0 22px; font-size: 14px; line-height: 1.9; color: #6d6056; overflow-wrap: anywhere; }
+.faq-item p { margin: 0; padding: 0 0 22px; font-size: 14px; line-height: 1.9; color: #6d6056; overflow-wrap: anywhere; white-space: pre-line; }
 .faq-contact { font-size: 13px; line-height: 1.8; margin: 32px 0; }
 .footer-meta { flex-wrap: wrap; }
 
