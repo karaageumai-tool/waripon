@@ -219,15 +219,23 @@ input:focus, select:focus, textarea:focus {
 }
 
 .member-chip.color-1 i {
-  background: #d6a13d;
+  background: #2878c8;
 }
 
 .member-chip.color-2 i {
-  background: #d22c49;
+  background: #2a9255;
 }
 
 .member-chip.color-3 i {
-  background: #bd7b98;
+  background: #d22c49;
+}
+
+.member-chip.color-4 i {
+  background: #8651b5;
+}
+
+.member-chip.color-5 i {
+  background: #168b98;
 }
 
 .member-chip button, .delete-button {
