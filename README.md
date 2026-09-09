@@ -50,6 +50,12 @@ Cronの設定仕様: https://supabase.com/docs/guides/cron
 
 期限計算のテスト: `node --test src/lib/expiration.test.js`
 
+## レシート画像（R2）
+
+画像はCloudflare R2の非公開バケットに保存します。支払い1件につき3枚、1枚300KBまでで、
+割り勘ページと同じ期限に削除します。全体の保存上限は8GBです。
+設定方法は [レシート画像の設定](docs/receipts-setup.md) を参照してください。
+
 ## コマンド
 
 ```sh
