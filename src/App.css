@@ -891,3 +891,8 @@ label input, label select, label textarea {
     flex-direction: column;
   }
 }
+
+.split-title-field { display: block; margin-bottom: 24px; max-width: 640px; }
+.split-title-field small { display: block; margin-top: 6px; color: #6d6056; font-size: 12px; font-weight: 400; }
+.intro > div:first-child { min-width: 0; }
+.intro h1 { overflow-wrap: anywhere; }

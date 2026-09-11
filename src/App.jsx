@@ -10,6 +10,9 @@ import SiteFooter from './components/SiteFooter'
 import LandingHeader from './components/LandingHeader'
 import logoUrl from '../logo/logo.svg'
 
+const INPUT_LIMITS = { title: 60, member: 30, expense: 100, note: 500, amount: 8 }
+const MAX_AMOUNT = 99_999_999
+
 const getSplitId = () => window.location.pathname.match(/^\/split\/([^/]+)\/?$/)?.[1] || null
 
 const readSplitData = (splitId) => {
@@ -39,6 +42,7 @@ function App() {
   const [expiresAt, setExpiresAt] = useState(savedData?.expiresAt || null)
   const [unavailable, setUnavailable] = useState(Boolean(splitId && !isSupabaseConfigured && !savedData))
   const [creating, setCreating] = useState(false)
+  const [title, setTitle] = useState(savedData?.title || '')
   const [members, setMembers] = useState(savedData?.members || [])
   const [newMember, setNewMember] = useState('')
   const [payer, setPayer] = useState(savedData?.members?.[0] || '')
@@ -62,8 +66,14 @@ function App() {
   const [receiptRevision, setReceiptRevision] = useState(0)
   const [receiptError, setReceiptError] = useState('')
 
+  useEffect(() => {
+    if (/^\/faq\/?$/.test(window.location.pathname)) return
+    document.title = splitId && !unavailable && title.trim() ? `${title.trim()} | waripon` : 'waripon'
+  }, [splitId, title, unavailable])
+
   const invalidate = () => {
     setUnavailable(true)
+    setTitle('')
     setMembers([])
     setExpenses([])
     setSelectedMembers([])
@@ -128,6 +138,7 @@ function App() {
       } else if (remote?.data && remote.updatedAt !== remoteUpdatedAt.current) {
         setExpiresAt(remote.expiresAt)
         const nextMembers = remote.data.members || []
+        setTitle(remote.data.title || '')
         setMembers(nextMembers)
         setExpenses(remote.data.expenses || [])
         setSelectedMembers(nextMembers)
@@ -145,7 +156,7 @@ function App() {
 
   useEffect(() => {
     if (submitting || submission.current || !splitId || !remoteReady || unavailable || !expiresAt || isExpired(expiresAt)) return
-    const splitData = { members, expenses }
+    const splitData = { title: title.trim(), members, expenses }
     if (!supabase) {
       try { window.localStorage.setItem(`waripon:${splitId}`, JSON.stringify({ ...splitData, expiresAt })) } catch { /* ローカル保存を省略 */ }
     }
@@ -169,7 +180,7 @@ function App() {
       }
     }, 350)
     return () => { window.clearTimeout(saveTimer); savePending.current = false }
-  }, [splitId, members, expenses, remoteReady, expiresAt, unavailable, submitting])
+  }, [splitId, title, members, expenses, remoteReady, expiresAt, unavailable, submitting])
 
   const startNew = async () => {
     if (creating) return
@@ -190,6 +201,7 @@ function App() {
     setUnavailable(false)
     setExpiresAt(nextExpiresAt)
     remoteUpdatedAt.current = null
+    setTitle('')
     setMembers([])
     setSelectedMembers([])
     setExpenses([])
@@ -203,7 +215,7 @@ function App() {
     event.preventDefault()
     if (submission.current) return
     const name = newMember.trim()
-    if (!name || members.includes(name)) return
+    if (!name || name.length > INPUT_LIMITS.member || members.includes(name)) return
     setMembers([...members, name])
     setSelectedMembers([...selectedMembers, name])
     if (members.length === 0) setPayer(name)
@@ -233,7 +245,8 @@ function App() {
     if (submission.current || compressing) return
     const numericAmount = Number(amount)
     if (!pendingExpenseId && !expenseName.trim()) { setNotice('支払い内容を入力してください'); return }
-    if (!pendingExpenseId && (!Number.isFinite(numericAmount) || numericAmount <= 0)) { setNotice('金額を入力してください'); return }
+    if (!pendingExpenseId && (expenseName.length > INPUT_LIMITS.expense || expenseNote.length > INPUT_LIMITS.note)) { setNotice('入力文字数が上限を超えています'); return }
+    if (!pendingExpenseId && (!Number.isInteger(numericAmount) || numericAmount <= 0 || numericAmount > MAX_AMOUNT)) { setNotice('金額は1〜99,999,999円の整数で入力してください'); return }
     if (!pendingExpenseId && selectedMembers.length === 0) { setNotice('負担するメンバーを選択してください'); return }
     if (receiptFiles.length || pendingExpenseId) {
       submission.current = true
@@ -246,7 +259,7 @@ function App() {
         if (!expenseId) {
           const expense = { id: Date.now(), name: expenseName.trim(), note: expenseNote.trim(), payer, amount: numericAmount, members: selectedMembers }
           const nextExpenses = [...expenses, expense]
-          const { data, error } = await supabase.rpc('save_split', { split_id: splitId, split_data: { members, expenses: nextExpenses } })
+          const { data, error } = await supabase.rpc('save_split', { split_id: splitId, split_data: { title: title.trim(), members, expenses: nextExpenses } })
           if (error || !data) throw new Error('支払いを保存できませんでした。再度お試しください。')
           expenseId = expense.id
           setPendingExpenseId(expenseId)
@@ -286,7 +299,7 @@ function App() {
   }
 
   const shareUrl = encodeURIComponent(window.location.href)
-  const shareText = encodeURIComponent('wariponで割り勘を共有しました')
+  const shareText = encodeURIComponent(title.trim() ? `${title.trim()} | wariponで割り勘を共有しました` : 'wariponで割り勘を共有しました')
 
   if (/^\/faq\/?$/.test(window.location.pathname)) return <FaqPage />
 
@@ -302,10 +315,11 @@ function App() {
     <div className="app-shell">
       <header className="topbar"><a className="brand" href="/" aria-label="waripon トップページ"><img src={logoUrl} alt="waripon" /></a><div className="top-actions"><span className="status-dot">●</span> {syncStatus} <button className="share-button" onClick={() => setShareOpen(true)} aria-haspopup="dialog">共有する <span>↗</span></button></div></header>
       <main>
-        <section className="intro"><div><p className="eyebrow">GROUP EXPENSES</p><h1>みんなのお金を、<br /><em>ポンっと</em>すっきり。</h1><p className="lead">誰がいくら立て替えたかを記録するだけ。<br />wariponが、いちばん少ない回数で精算します。</p></div><div className="total-block"><span>現在の合計</span><strong>¥{total.toLocaleString()}</strong><small>{members.length}人で割り勘中</small></div></section>
+        <section className="intro"><div><p className="eyebrow">GROUP EXPENSES</p><h1>{title.trim() || <>みんなのお金を、<br /><em>ポンっと</em>すっきり。</>}</h1><p className="lead">誰がいくら立て替えたかを記録するだけ。<br />wariponが、いちばん少ない回数で精算します。</p></div><div className="total-block"><span>現在の合計</span><strong>¥{total.toLocaleString()}</strong><small>{members.length}人で割り勘中</small></div></section>
+        <label className="split-title-field">タイトル（任意）<input value={title} maxLength={INPUT_LIMITS.title} disabled={submitting} onChange={(event) => setTitle(event.target.value)} placeholder="例：京都旅行、週末の飲み会" aria-describedby="title-limit" /><small id="title-limit">{INPUT_LIMITS.title}文字まで・自動保存</small></label>
         <div className="workspace">
-          <section className="panel input-panel"><div className="panel-heading"><div><span className="step">STEP 01</span><h2>メンバーを追加</h2></div><span className="member-count">{members.length}人</span></div><form className="member-form" onSubmit={addMember}><input value={newMember} onChange={(event) => setNewMember(event.target.value)} placeholder="名前を入力" /><button type="submit" aria-label="メンバーを追加">＋</button></form><div className="member-list">{members.map((member) => <span className={`member-chip ${memberColor(member)}`} key={member}><i />{member}<button type="button" disabled={submitting} onClick={() => removeMember(member)} aria-label={`${member}を削除`}>×</button></span>)}</div></section>
-          <section className="panel input-panel expense-input"><div className="panel-heading"><div><span className="step">STEP 02</span><h2>支払いを記録</h2></div><span className="tip">レシートごとに入力</span></div><form onSubmit={addExpense}><fieldset className="expense-fields" disabled={submitting || Boolean(pendingExpenseId)}><div className="form-grid"><label>内容<input value={expenseName} onChange={(event) => setExpenseName(event.target.value)} placeholder="例：ランチ、ホテル代" /></label><label>支払った人<select value={payer} onChange={(event) => setPayer(event.target.value)}>{members.map((member) => <option key={member}>{member}</option>)}</select></label><label className="amount-field">金額<div className="amount-input"><span>¥</span><input type="number" min="1" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="0" /></div></label></div><label className="expense-note-field">備考（任意）<textarea value={expenseNote} onChange={(event) => setExpenseNote(event.target.value)} rows={3} placeholder="例：クーポン利用、立て替え時のメモ" /></label><div className="who-pays"><span>誰のぶん？</span><div>{members.map((member) => <button type="button" className={`${memberColor(member)} ${selectedMembers.includes(member) ? 'selected' : ''}`} aria-pressed={selectedMembers.includes(member)} key={member} onClick={() => toggleMember(member)}><span>{selectedMembers.includes(member) ? '✓' : ''}</span>{member}</button>)}</div></div></fieldset>{receiptsApiUrl && isSupabaseConfigured && <ReceiptPicker files={receiptFiles} onChange={setReceiptFiles} disabled={submitting} onBusy={setCompressing} />}{receiptError && <p className="receipt-message" role="status">{receiptError}</p>}<button className="primary-button" type="submit" disabled={submitting || compressing}>{submitting ? '保存中…' : pendingExpenseId ? '画像の保存を再試行' : '支払いを追加'} <span>＋</span></button></form></section>
+          <section className="panel input-panel"><div className="panel-heading"><div><span className="step">STEP 01</span><h2>メンバーを追加</h2></div><span className="member-count">{members.length}人</span></div><form className="member-form" onSubmit={addMember}><input aria-label="メンバー名（30文字まで）" maxLength={INPUT_LIMITS.member} value={newMember} onChange={(event) => setNewMember(event.target.value)} placeholder="名前を入力" /><button type="submit" aria-label="メンバーを追加">＋</button></form><div className="member-list">{members.map((member) => <span className={`member-chip ${memberColor(member)}`} key={member}><i />{member}<button type="button" disabled={submitting} onClick={() => removeMember(member)} aria-label={`${member}を削除`}>×</button></span>)}</div></section>
+          <section className="panel input-panel expense-input"><div className="panel-heading"><div><span className="step">STEP 02</span><h2>支払いを記録</h2></div><span className="tip">レシートごとに入力</span></div><form onSubmit={addExpense}><fieldset className="expense-fields" disabled={submitting || Boolean(pendingExpenseId)}><div className="form-grid"><label>内容（100文字まで）<input maxLength={INPUT_LIMITS.expense} value={expenseName} onChange={(event) => setExpenseName(event.target.value)} placeholder="例：ランチ、ホテル代" /></label><label>支払った人<select value={payer} onChange={(event) => setPayer(event.target.value)}>{members.map((member) => <option key={member}>{member}</option>)}</select></label><label className="amount-field">金額<div className="amount-input"><span>¥</span><input type="text" inputMode="numeric" pattern="[0-9]{1,8}" maxLength={INPUT_LIMITS.amount} aria-label="金額（1〜99,999,999円）" value={amount} onChange={(event) => { if (/^[0-9]*$/.test(event.target.value)) setAmount(event.target.value) }} placeholder="0" /></div></label></div><label className="expense-note-field">備考（任意・500文字まで）<textarea maxLength={INPUT_LIMITS.note} value={expenseNote} onChange={(event) => setExpenseNote(event.target.value)} rows={3} placeholder="例：クーポン利用、立て替え時のメモ" /></label><div className="who-pays"><span>誰のぶん？</span><div>{members.map((member) => <button type="button" className={`${memberColor(member)} ${selectedMembers.includes(member) ? 'selected' : ''}`} aria-pressed={selectedMembers.includes(member)} key={member} onClick={() => toggleMember(member)}><span>{selectedMembers.includes(member) ? '✓' : ''}</span>{member}</button>)}</div></div></fieldset>{receiptsApiUrl && isSupabaseConfigured && <ReceiptPicker files={receiptFiles} onChange={setReceiptFiles} disabled={submitting} onBusy={setCompressing} />}{receiptError && <p className="receipt-message" role="status">{receiptError}</p>}<button className="primary-button" type="submit" disabled={submitting || compressing}>{submitting ? '保存中…' : pendingExpenseId ? '画像の保存を再試行' : '支払いを追加'} <span>＋</span></button></form></section>
         </div>
         <section className="lower-grid"><div className="panel expense-list"><div className="panel-heading"><div><span className="step">RECORDED</span><h2>支払い一覧</h2></div><span className="tip">{expenses.length}件</span></div>{expenses.length === 0 ? <p className="empty">支払いを追加すると、ここに表示されます。</p> : expenses.map((expense) => <article className="expense-row" key={expense.id}><div className={`expense-icon ${memberColor(expense.payer)}`}>¥</div><div className="expense-detail"><strong>{expense.name}</strong><span>{expense.payer}が支払い · {expense.members.join('、')}の分</span>{expense.note && <span className="expense-note">{expense.note}</span>}{receiptsApiUrl && isSupabaseConfigured && <Receipts splitId={splitId} expenseId={expense.id} disabled={submitting || syncStatus !== '同期済み'} revision={receiptRevision} />}</div><strong className="expense-amount">¥{expense.amount.toLocaleString()}</strong><button className="delete-button" disabled={submitting || pendingExpenseId === expense.id} onClick={() => removeExpense(expense.id)} aria-label={`${expense.name}を削除`}>×</button></article>)}</div><div className="panel settlement"><div className="panel-heading"><div><span className="step">STEP 03</span><h2>精算する</h2></div><span className="spark">✦ 最小回数で計算</span></div>{settlements.length === 0 ? <div className="settled"><div>✓</div><strong>精算完了</strong><span>みんなの支払いはバランスしています。</span></div> : <div className="settlement-list">{settlements.map((item) => <div className="settlement-row" key={`${item.from}-${item.to}`}><div className={`avatar ${memberColor(item.from)}`}>{item.from.slice(0, 1)}</div><strong>{item.from}</strong><span className="arrow">→</span><div className={`avatar ${memberColor(item.to)}`}>{item.to.slice(0, 1)}</div><strong>{item.to}</strong><b>¥{item.amount.toLocaleString()}</b></div>)}<p className="settlement-note">この{settlements.length}回の送金で、精算が完了します。</p></div>}
         </div></section>

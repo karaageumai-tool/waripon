@@ -56,8 +56,8 @@ test('attach compressed image, view, reload, remove, and handle capacity errors'
     return canvas.toDataURL('image/png').split(',')[1]
   })
   const file = { name: 'receipt.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') }
-  await page.getByLabel('内容', { exact: true }).fill('レシート付き支払い')
-  await page.locator('input[type=number]').fill('500')
+  await page.getByLabel('内容', { exact: false }).fill('レシート付き支払い')
+  await page.locator('.amount-input input').fill('500')
   await page.locator('input[type=file]').setInputFiles(file)
   await expect(page.getByText('receipt.png（', { exact: false })).toBeVisible()
   expect(images.length).toBe(0)
@@ -73,8 +73,8 @@ test('attach compressed image, view, reload, remove, and handle capacity errors'
   await page.getByRole('button', { name: '画像1を削除' }).click()
   await expect(page.getByRole('button', { name: '画像1を開く' })).toHaveCount(0)
   full = true
-  await page.getByLabel('内容', { exact: true }).fill('再試行テスト')
-  await page.locator('input[type=number]').fill('100')
+  await page.getByLabel('内容', { exact: false }).fill('再試行テスト')
+  await page.locator('.amount-input input').fill('100')
   await page.locator('input[type=file]').setInputFiles(file)
   await expect(page.getByText('receipt.png（', { exact: false })).toBeVisible()
   await page.getByRole('button', { name: '支払いを追加' }).click()
