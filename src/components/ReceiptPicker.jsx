@@ -33,7 +33,7 @@ export default function ReceiptPicker({ files, onChange, disabled, onBusy }) {
       <span>{file.name}（{Math.ceil(file.blob.size / 1000)}KB）</span>
       <button type="button" onClick={() => onChange(files.filter((item) => item.id !== file.id))} disabled={disabled || busy} aria-label={`${file.name}の添付を取り消す`}>×</button>
     </div>)}
-    <p className="receipt-help">1枚300KBまで自動圧縮・最大3枚。</p>
+    <p className="receipt-help">アップロード時に自動圧縮・最大3枚。</p>
     {message && <p className="receipt-message" role="status">{message}</p>}
   </div>
 }
