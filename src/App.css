@@ -517,6 +517,10 @@ label input, label select, label textarea {
 
 .receipts { margin-top: 10px; }
 .expense-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.edit-button { border: 1px solid #d8c9ba; border-radius: 6px; background: #fff; color: #554638; padding: 7px 10px; white-space: nowrap; cursor: pointer; }
+.expense-editor { padding: 16px; margin-bottom: 16px; background: #fff8ef; border: 1px solid #eee5dc; border-radius: 8px; }
+.expense-editor h3 { margin: 0 0 16px; }
+.expense-edit-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .receipt-picker { margin-bottom: 16px; }
 .receipt-draft { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 8px; }
 .receipt-draft span { overflow-wrap: anywhere; min-width: 0; }
