@@ -897,6 +897,8 @@ label input, label select, label textarea {
 }
 
 .split-title-field { display: block; margin-bottom: 24px; max-width: 640px; }
+.migration-message { margin: 24px 0; line-height: 1.9; color: #6d6056; }
+.migration-link { display: inline-flex; text-decoration: none; }
 .split-title-field small { display: block; margin-top: 6px; color: #6d6056; font-size: 12px; font-weight: 400; }
 .intro > div:first-child { min-width: 0; }
 .intro h1 { overflow-wrap: anywhere; }

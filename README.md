@@ -1,5 +1,7 @@
 # waripon
 
+公開先: https://merylomm.com/waripon/ — [Xserverへの配置手順](docs/xserver-deploy.md)
+
 短い個別URLで割り勘を共有できるReactアプリです。Supabaseを設定すると、複数端末間でデータを同期します。
 
 ## セットアップ

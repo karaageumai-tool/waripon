@@ -40,7 +40,7 @@ test('attach compressed image, view, reload, remove, and handle capacity errors'
       await route.fulfill({ contentType: 'image/jpeg', body: imageBody })
     } else { await route.fulfill({ json: images.filter(item => request.url().includes(`/expenses/${item.expenseId}/`)) }) }
   })
-  await page.goto(`/split/${splitId}`)
+  await page.goto(`/waripon/split/${splitId}`)
   const upload = page.getByRole('button', { name: /レシートを添付/ })
   await expect(upload).toBeEnabled()
   await expect(page.locator('.expense-input').getByRole('button', { name: /レシートを添付/ })).toBeVisible()

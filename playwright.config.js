@@ -6,7 +6,7 @@ export default defineConfig({
   use: { baseURL: 'http://127.0.0.1:4175', headless: true },
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1 --port 4175 --strictPort',
-    url: 'http://127.0.0.1:4175',
+    url: 'http://127.0.0.1:4175/waripon/',
     reuseExistingServer: false,
     env: {
       VITE_SUPABASE_URL: 'https://supabase.test',

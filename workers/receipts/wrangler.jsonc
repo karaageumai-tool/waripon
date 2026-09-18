@@ -7,7 +7,7 @@
   "r2_buckets": [{ "binding": "RECEIPTS", "bucket_name": "waripon-receipts" }],
   "triggers": { "crons": ["*/5 * * * *"] },
   "vars": {
-    "ALLOWED_ORIGINS": "https://waripon.vercel.app,http://127.0.0.1:5173,http://localhost:5173"
+    "ALLOWED_ORIGINS": "https://merylomm.com,https://waripon.vercel.app,http://127.0.0.1:5173,http://localhost:5173"
   },
   "observability": { "enabled": false }
 }

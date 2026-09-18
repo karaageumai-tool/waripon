@@ -10,7 +10,7 @@ test('optional title persists with expenses and can be cleared', async ({ page }
     } else await route.fulfill({ json: { data, updatedAt: String(revision), expiresAt: '2999-01-01' } })
   })
   await page.route('https://receipts.test/**', (route) => route.fulfill({ json: [] }))
-  await page.goto('/split/abcdefghijklmnopqrst')
+  await page.goto('/waripon/split/abcdefghijklmnopqrst')
   const title = page.locator('.split-title-field input')
   await title.fill('Weekend trip')
   await expect.poll(() => data.title).toBe('Weekend trip')

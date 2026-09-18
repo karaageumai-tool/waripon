@@ -13,7 +13,7 @@ test('removing members updates payments, totals, settlement and saved data', asy
     } else await route.fulfill({ json: { data, updatedAt: '2026-09-09', expiresAt: '2999-01-01' } })
   })
   await page.route('https://receipts.test/**', (route) => route.fulfill({ json: [] }))
-  await page.goto('/split/abcdefghijklmnopqrst')
+  await page.goto('/waripon/split/abcdefghijklmnopqrst')
   await page.getByRole('button', { name: 'Aを削除', exact: true }).click()
   await expect(page.locator('.expense-row')).toHaveCount(1)
   await expect(page.locator('.expense-row')).toContainText('Shared payment')

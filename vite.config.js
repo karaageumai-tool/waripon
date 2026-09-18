@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/waripon/',
   plugins: [react()],
   envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
 })

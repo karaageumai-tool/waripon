@@ -1,3 +1,5 @@
+import { appPath, currentAppPath } from './lib/paths'
+import { isLegacySite, productionUrl } from './lib/site'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
@@ -14,7 +16,7 @@ import logoUrl from '../logo/logo.svg'
 const INPUT_LIMITS = { title: 60, member: 30, expense: 100, note: 500, amount: 8 }
 const MAX_AMOUNT = 99_999_999
 
-const getSplitId = () => window.location.pathname.match(/^\/split\/([^/]+)\/?$/)?.[1] || null
+const getSplitId = () => currentAppPath().match(/^\/split\/([^/]+)\/?$/)?.[1] || null
 
 const readSplitData = (splitId) => {
   if (!splitId) return null
@@ -69,7 +71,7 @@ function App() {
   const [receiptError, setReceiptError] = useState('')
 
   useEffect(() => {
-    if (/^\/faq\/?$/.test(window.location.pathname)) return
+    if (/^\/faq\/?$/.test(currentAppPath())) return
     document.title = splitId && !unavailable && title.trim() ? `${title.trim()} | waripon` : 'waripon'
   }, [splitId, title, unavailable])
 
@@ -162,7 +164,7 @@ function App() {
     if (!supabase) {
       try { window.localStorage.setItem(`waripon:${splitId}`, JSON.stringify({ ...splitData, expiresAt })) } catch { /* ローカル保存を省略 */ }
     }
-    window.history.replaceState(null, '', `/split/${splitId}`)
+    window.history.replaceState(null, '', appPath(`split/${splitId}`))
 
     if (!supabase) return
     // The save effect owns the pending network write; disable uploads until it completes.
@@ -185,7 +187,7 @@ function App() {
   }, [splitId, title, members, expenses, remoteReady, expiresAt, unavailable, submitting])
 
   const startNew = async () => {
-    if (creating) return
+    if (creating || isLegacySite()) return
     setCreating(true)
     let nextSplitId = createSplitId()
     let nextExpiresAt = sixMonthsFrom(Date.now())
@@ -210,7 +212,7 @@ function App() {
     setPayer('')
     setRemoteReady(true)
     setSplitId(nextSplitId)
-    window.history.pushState(null, '', `/split/${nextSplitId}`)
+    window.history.pushState(null, '', appPath(`split/${nextSplitId}`))
   }
 
   const addMember = (event) => {
@@ -311,19 +313,22 @@ function App() {
   const shareUrl = encodeURIComponent(window.location.href)
   const shareText = encodeURIComponent(title.trim() ? `${title.trim()} | wariponで割り勘を共有しました` : 'wariponで割り勘を共有しました')
 
-  if (/^\/faq\/?$/.test(window.location.pathname)) return <FaqPage />
+  if (/^\/faq\/?$/.test(currentAppPath())) return <FaqPage />
 
   if (!splitId) {
+    if (isLegacySite()) {
+      return <div className="landing-shell"><LandingHeader /><main className="landing"><div className="landing-content"><h1>wariponは<br /><em>引っ越しました。</em></h1><p className="migration-message">新しい割り勘は、新サイトで作成できます。<br />作成済みの割り勘は、これまでのURLから引き続き利用できます（保存期限まで）。</p><a className="start-button migration-link" href={productionUrl}>新しいサイトへ <span>→</span></a></div></main><SiteFooter className="landing-footer" /></div>
+    }
     return <div className="landing-shell"><LandingHeader /><main className="landing"><div className="landing-content"><h1>わりかんを、<br /><em>ポンっと軽やかに。</em></h1><button className="start-button" onClick={startNew} disabled={creating}>新しい割り勘を作成 <span>→</span></button>{notice && <p role="alert">{notice}</p>}</div></main><SiteFooter className="landing-footer" /></div>
   }
 
   if (unavailable || !remoteReady) {
-    return <div className="app-shell"><main><section className="panel"><h1>{unavailable ? 'この割り勘ページは利用できません' : '読み込み中…'}</h1><p>{unavailable ? '保存期限（発行から6か月）が過ぎたか、URLが存在しません。' : 'ページを確認しています。'}</p>{syncStatus === 'オフライン' && <p>接続できません。通信状況を確認してください。</p>}<a href="/">トップページへ</a></section></main><SiteFooter /></div>
+    return <div className="app-shell"><main><section className="panel"><h1>{unavailable ? 'この割り勘ページは利用できません' : '読み込み中…'}</h1><p>{unavailable ? '保存期限（発行から6か月）が過ぎたか、URLが存在しません。' : 'ページを確認しています。'}</p>{syncStatus === 'オフライン' && <p>接続できません。通信状況を確認してください。</p>}<a href={appPath()}>トップページへ</a></section></main><SiteFooter /></div>
   }
 
   return (
     <div className="app-shell">
-      <header className="topbar"><a className="brand" href="/" aria-label="waripon トップページ"><img src={logoUrl} alt="waripon" /></a><div className="top-actions"><span className="status-dot">●</span> {syncStatus} <button className="share-button" onClick={() => setShareOpen(true)} aria-haspopup="dialog">共有する <span>↗</span></button></div></header>
+      <header className="topbar"><a className="brand" href={appPath()} aria-label="waripon トップページ"><img src={logoUrl} alt="waripon" /></a><div className="top-actions"><span className="status-dot">●</span> {syncStatus} <button className="share-button" onClick={() => setShareOpen(true)} aria-haspopup="dialog">共有する <span>↗</span></button></div></header>
       <main>
         <section className="intro"><div><p className="eyebrow">GROUP EXPENSES</p><h1>{title.trim() || <>みんなのお金を、<br /><em>ポンっと</em>すっきり。</>}</h1><p className="lead">誰がいくら立て替えたかを記録するだけ。<br />wariponが、いちばん少ない回数で精算します。</p></div><div className="total-block"><span>現在の合計</span><strong>¥{total.toLocaleString()}</strong><small>{members.length}人で割り勘中</small></div></section>
         <label className="split-title-field">タイトル（任意）<input value={title} maxLength={INPUT_LIMITS.title} disabled={submitting} onChange={(event) => setTitle(event.target.value)} placeholder="例：京都旅行、週末の飲み会" aria-describedby="title-limit" /><small id="title-limit">{INPUT_LIMITS.title}文字まで・自動保存</small></label>

@@ -10,7 +10,7 @@ test('edit preserves identity, recalculates settlement, persists, and supports c
     } else await route.fulfill({ json: { data, updatedAt: String(revision), expiresAt: '2999-01-01' } })
   })
   await page.route('https://receipts.test/**', (route) => route.fulfill({ json: [] }))
-  await page.goto('/split/abcdefghijklmnopqrst')
+  await page.goto('/waripon/split/abcdefghijklmnopqrst')
   await page.getByRole('button', { name: 'Lunchを編集' }).click()
   const editor = page.getByRole('form', { name: 'Lunchの編集' })
   await editor.getByLabel('内容（100文字まで）').fill('Dinner')

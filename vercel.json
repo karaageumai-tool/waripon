@@ -1,7 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
+  "redirects": [
+    { "source": "/", "destination": "/waripon/", "permanent": false },
+    { "source": "/split/:id", "destination": "/waripon/split/:id", "permanent": false },
+    { "source": "/faq", "destination": "/waripon/faq", "permanent": false }
+  ],
   "rewrites": [
+    { "source": "/waripon/assets/:path*", "destination": "/assets/:path*" },
+    { "source": "/waripon/:path*", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

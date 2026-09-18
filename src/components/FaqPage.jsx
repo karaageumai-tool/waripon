@@ -1,3 +1,4 @@
+import { appPath } from '../lib/paths'
 import { useEffect } from 'react'
 import LandingHeader from './LandingHeader'
 import SiteFooter from './SiteFooter'
@@ -50,7 +51,7 @@ export default function FaqPage() {
   return <div className="app-shell faq-shell">
     <LandingHeader />
     <main className="faq-main">
-      <a className="faq-back" href="/" onClick={goBack}>← 前のページに戻る</a>
+      <a className="faq-back" href={appPath()} onClick={goBack}>← 前のページに戻る</a>
       <div className="faq-intro"><p className="eyebrow">FAQ</p><h1>よくある質問</h1><p className="lead">使い方や共有、レシートの保存について。</p></div>
       {sections.map((section, sectionIndex) => <section className="faq-section" key={section.title} aria-labelledby={`faq-section-${sectionIndex}`}>
         <h2 id={`faq-section-${sectionIndex}`}>{section.title}</h2>
@@ -59,8 +60,8 @@ export default function FaqPage() {
         </details>)}</div>
       </section>)}
       <nav className="faq-bottom-links" aria-label="FAQページ下部のナビゲーション">
-        <a className="faq-back" href="/" onClick={goBack}>← 前のページに戻る</a>
-        <a className="faq-back" href="/">トップページへ</a>
+        <a className="faq-back" href={appPath()} onClick={goBack}>← 前のページに戻る</a>
+        <a className="faq-back" href={appPath()}>トップページへ</a>
       </nav>
     </main>
     <SiteFooter className="landing-footer" />
