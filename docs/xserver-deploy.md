@@ -6,20 +6,20 @@
 
 `main` へのpushで `.github/workflows/deploy-xserver.yml` が実行され、検査・ビルドが成功した場合だけXserverへ転送します。GitHubのActionsから手動実行もできます。VercelへのGit自動デプロイは `vercel.json` で無効にしています。
 
-XserverのサーバーIDは `qon09`、SSHは有効です。接続先は `qon09.xsrv.jp`、ポートは `10022`、配置先は `/home/qon09/merylomm.com/public_html/waripon/` です。
+XserverのサーバーIDは `qon09`、SSHは有効です。接続先は `sv810.xserver.jp`、ポートは `10022`、配置先は `/home/qon09/merylomm.com/public_html/waripon/` です。
 
 [GitHubのActions Secrets](https://github.com/karaageumai-tool/waripon/settings/secrets/actions) の「New repository secret」で次を登録します。
 
 | Secret名 | 値 |
 | --- | --- |
-| `XSERVER_HOST` | `qon09.xsrv.jp` |
+| `XSERVER_HOST` | `sv810.xserver.jp` |
 | `XSERVER_USER` | `qon09` |
 | `XSERVER_SSH_KEY` | Xserverに公開鍵を登録した、デプロイ専用のパスフレーズなし秘密鍵の全文 |
-| `XSERVER_KNOWN_HOSTS` | 接続先の確認済みSSHホスト鍵（`[qon09.xsrv.jp]:10022` のknown_hosts行） |
+| `XSERVER_KNOWN_HOSTS` | 接続先の確認済みSSHホスト鍵（`[sv810.xserver.jp]:10022` のknown_hosts行） |
 | `VITE_SUPABASE_URL` | ローカル `.env` の `NEXT_PUBLIC_SUPABASE_URL` と同じ値 |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | ローカル `.env` の `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` と同じ値。service_roleは使いません |
 
-SSH鍵はXserverサーバーパネルの「SSH設定」で公開鍵を登録します。秘密鍵はGit・チャットへ貼り付けません。ホスト鍵は初回接続時に正しいサーバーであることを確認して保存したknown_hostsの行を使用してください。`ssh-keyscan -p 10022 qon09.xsrv.jp` でも取得できますが、その出力だけで接続先を信用せず、確認済みの指紋と照合してください。
+SSH鍵はXserverサーバーパネルの「SSH設定」で公開鍵を登録します。秘密鍵はGit・チャットへ貼り付けません。ホスト鍵は初回接続時に正しいサーバーであることを確認して保存したknown_hostsの行を使用してください。`ssh-keyscan -p 10022 sv810.xserver.jp` でも取得できますが、その出力だけで接続先を信用せず、確認済みの指紋と照合してください。
 
 登録後、[Actions](https://github.com/karaageumai-tool/waripon/actions) →「Deploy to Xserver」→「Run workflow」→ `main` を選んで初回実行します。以降は `main` へのpushだけで反映されます。未登録のSecretがある場合は公開前に失敗します。
 
