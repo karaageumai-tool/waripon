@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
+  "git": { "deploymentEnabled": false },
   "redirects": [
     { "source": "/", "destination": "/waripon/", "permanent": false },
     { "source": "/split/:id", "destination": "/waripon/split/:id", "permanent": false },

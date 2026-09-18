@@ -1,0 +1,54 @@
+name: Deploy to Xserver
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: xserver-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: xserver-production
+      url: https://merylomm.com/waripon/
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install and verify
+        run: |
+          npm ci
+          npm run lint
+          npm test
+      - name: Build production site
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          test -n "$VITE_SUPABASE_URL" || { echo 'Missing VITE_SUPABASE_URL'; exit 1; }
+          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo 'Missing VITE_SUPABASE_PUBLISHABLE_KEY'; exit 1; }
+          npm run build
+      - name: Upload to Xserver
+        env:
+          XSERVER_HOST: ${{ secrets.XSERVER_HOST }}
+          XSERVER_USER: ${{ secrets.XSERVER_USER }}
+          XSERVER_SSH_KEY: ${{ secrets.XSERVER_SSH_KEY }}
+          XSERVER_KNOWN_HOSTS: ${{ secrets.XSERVER_KNOWN_HOSTS }}
+        run: bash scripts/deploy-xserver.sh
+      - name: Check public deployment
+        run: |
+          curl --fail --silent --show-error --retry 3 "https://merylomm.com/waripon/?deploy=$GITHUB_SHA" -o /tmp/waripon-live.html
+          cmp dist/index.html /tmp/waripon-live.html
